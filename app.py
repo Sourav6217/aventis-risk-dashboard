@@ -4,7 +4,14 @@ import pandas as pd
 st.set_page_config(page_title="Aventis Ops Risk Dashboard", layout="wide")
 
 st.title("Aventis Finance – Operational Risk Command Center")
-
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📊 Operational Snapshot",
+    "🚨 Risk Alerts",
+    "📐 Risk Scoring (FMEA)",
+    "🧪 Data Protection",
+    "📑 Governance"
+])
+with tab1:
 st.write("Upload daily feed status or use sample data")
 
 # File upload
@@ -60,6 +67,8 @@ st.subheader("🚨 Risk Alerts & Early Warnings")
 LATE_THRESHOLD = 10       # %
 DQI_THRESHOLD = 0.95
 LATENCY_THRESHOLD = 15    # minutes
+with tab2:
+    # Risk Alerts & Early Warnings code
 
 # Alert flags
 alerts = []
@@ -85,7 +94,7 @@ st.subheader("📊 FMEA Risk Scoring (RPN)")
 st.write(
     "Score each risk dimension to quantify operational risk priority."
 )
-
+with tab3:
 # FMEA sliders
 severity = st.slider(
     "Severity (Impact on SLA / Regulatory Compliance)",
@@ -124,6 +133,8 @@ else:
     st.success("LOW RISK – Acceptable operational risk")
 st.markdown("---")
 st.subheader("🧪 Quarantine Pattern – Data Flow Protection")
+with tab4:
+    # Quarantine pattern metrics and progress bar
 
 # Quarantine calculations
 total_records = df["records_total"].sum()
@@ -146,6 +157,8 @@ with q2:
         "Safely Processed Records %",
         f"{processed_rate * 100:.2f}%"
     )
+with tab5:
+    # KRI → Compliance mapping table
 
 # Visual indicator
 st.write("Data Processing Health")
