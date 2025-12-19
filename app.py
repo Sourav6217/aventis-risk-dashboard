@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from utils.cri_logic import compute_cri
 
 st.set_page_config(page_title="Aventis Ops Risk Dashboard", layout="wide")
 
