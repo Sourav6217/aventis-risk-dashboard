@@ -6,11 +6,12 @@ st.set_page_config(page_title="Aventis Ops Risk Dashboard", layout="wide")
 
 st.title("Aventis Finance – Operational Risk Command Center")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📊 Operational Snapshot",
     "🚨 Risk Alerts",
     "📐 Risk Scoring (FMEA)",
     "🧪 Data Protection",
+    " Client Reliability Index(CRI)",
     "📑 Governance"
 ])
 
@@ -91,7 +92,24 @@ with tab3:
     else:
         st.success("LOW RISK")
     st.markdown("---")
-    st.subheader("🔮 Client Reliability Index (CRI) Simulator")
+   
+    
+# ---------------- TAB 4 ----------------
+with tab4:
+    st.subheader("🧪 Quarantine Pattern – Data Flow Protection")
+
+    quarantine_rate = df["records_invalid"].sum() / df["records_total"].sum()
+    processed_rate = 1 - quarantine_rate
+
+    c1, c2 = st.columns(2)
+    c1.metric("Quarantined Records %", f"{quarantine_rate*100:.2f}%")
+    c2.metric("Safely Processed %", f"{processed_rate*100:.2f}%")
+
+    st.progress(processed_rate)
+
+# ---------------- TAB 5 ----------------
+with tab5:
+     st.subheader("🔮 Client Reliability Index (CRI) Simulator")
 
     # Client selector
     selected_client = st.selectbox(
@@ -132,22 +150,8 @@ with tab3:
     else:
         st.success("No high-risk weeks detected for this client")
 
-    
-# ---------------- TAB 4 ----------------
-with tab4:
-    st.subheader("🧪 Quarantine Pattern – Data Flow Protection")
-
-    quarantine_rate = df["records_invalid"].sum() / df["records_total"].sum()
-    processed_rate = 1 - quarantine_rate
-
-    c1, c2 = st.columns(2)
-    c1.metric("Quarantined Records %", f"{quarantine_rate*100:.2f}%")
-    c2.metric("Safely Processed %", f"{processed_rate*100:.2f}%")
-
-    st.progress(processed_rate)
-
-# ---------------- TAB 5 ----------------
-with tab5:
+# ---------------- TAB 6 ----------------
+with tab6:
     st.subheader("📑 Governance & Compliance Mapping")
 
     gov_df = pd.DataFrame({
