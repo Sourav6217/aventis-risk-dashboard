@@ -109,6 +109,7 @@ with tab4:
     c2.metric("Safely Processed %", f"{processed_rate*100:.2f}%")
 
     st.progress(processed_rate)
+
     st.markdown("---")
     st.subheader("🔮 Technology Saturation Forecast")
 
@@ -128,7 +129,8 @@ with tab4:
                 "⚠️ Latency is trending upward. "
                 "Capacity planning intervention recommended."
             )
-        st.write("Latency Trend Over Time")
+
+    st.write("Latency Trend Over Time")
 
     tech_df["date"] = pd.to_datetime(tech_df["date"])
     st.line_chart(
