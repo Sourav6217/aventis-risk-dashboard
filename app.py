@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils.cri_logic import compute_cri
+from utils.tech_forecast import tech_saturation_forecast
 
 st.set_page_config(page_title="Aventis Ops Risk Dashboard", layout="wide")
 
@@ -23,6 +24,10 @@ else:
 # Client CRI historical data (load ONCE)
 client_history_df = pd.read_csv("data/client_weekly_history.csv")
 client_cri_df = compute_cri(client_history_df)
+# Technology daily metrics data
+tech_df = pd.read_csv("data/tech_daily_metrics.csv")
+tech_forecast_result = tech_saturation_forecast(tech_df)
+
 
 # ---------------- TABS ----------------
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
@@ -104,6 +109,35 @@ with tab4:
     c2.metric("Safely Processed %", f"{processed_rate*100:.2f}%")
 
     st.progress(processed_rate)
+        st.markdown("---")
+    st.subheader("🔮 Technology Saturation Forecast")
+
+    if tech_forecast_result is None:
+        st.success("No saturation risk detected based on current trends")
+    else:
+        sat_date = tech_forecast_result["saturation_date"]
+        slope = tech_forecast_result["slope"]
+
+        st.metric(
+            "Predicted Saturation Date",
+            sat_date.strftime("%Y-%m-%d")
+        )
+
+        if slope > 0:
+            st.warning(
+                "⚠️ Latency is trending upward. "
+                "Capacity planning intervention recommended."
+            )
+        st.write("Latency Trend Over Time")
+
+    tech_df["date"] = pd.to_datetime(tech_df["date"])
+    st.line_chart(
+        tech_df.set_index("date")["avg_ingestion_latency_min"]
+    )
+
+    st.caption(
+        "The horizontal risk threshold is 20 minutes latency."
+    )
 
 # ---------------- TAB 5 ----------------
 with tab5:
