@@ -124,15 +124,13 @@ with tab4:
             sat_date.strftime("%Y-%m-%d")
         )
 
-        if slope > 0:
-            st.warning(
-                "⚠️ Latency is trending upward. "
-                "Capacity planning intervention recommended."
-            )
+        st.warning(
+            "⚠️ Latency is trending upward. "
+            "Capacity planning intervention recommended."
+        )
 
     st.write("Latency Trend Over Time")
 
-    tech_df["date"] = pd.to_datetime(tech_df["date"])
     st.line_chart(
         tech_df.set_index("date")["avg_ingestion_latency_min"]
     )
@@ -140,6 +138,7 @@ with tab4:
     st.caption(
         "The horizontal risk threshold is 20 minutes latency."
     )
+
 
 # ---------------- TAB 5 ----------------
 with tab5:
