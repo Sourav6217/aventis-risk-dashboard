@@ -2,10 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-def tech_saturation_forecast(
-    df,
-    latency_threshold=20.0
-):
+
+def tech_saturation_forecast(df, latency_threshold=20.0):
     """
     Forecast the date when average ingestion latency
     crosses the saturation threshold using linear regression.
@@ -13,18 +11,24 @@ def tech_saturation_forecast(
 
     df = df.copy()
 
-    # Convert date to datetime
+    # --- Robust date parsing ---
     df["date"] = pd.to_datetime(
-    df["date"].astype(str).str.strip(),
-    format="%Y-%m-%d",
-    errors="coerce"
-)
+        df["date"].astype(str).str.strip(),
+        format="%Y-%m-%d",
+        errors="coerce"
+    )
 
+    # Drop rows with invalid dates
+    df = df.dropna(subset=["date"])
 
-    # Create day index (0,1,2,...)
+    # Safety check
+    if df.empty:
+        return None
+
+    # --- Create day index (0,1,2,...) ---
     df["day_index"] = (df["date"] - df["date"].min()).dt.days
 
-    # Prepare regression variables
+    # Regression variables
     X = df[["day_index"]]
     y = df["avg_ingestion_latency_min"]
 
@@ -35,21 +39,15 @@ def tech_saturation_forecast(
     intercept = model.intercept_
     slope = model.coef_[0]
 
-    # Solve for saturation day:
-    # latency_threshold = intercept + slope * day_index
+    # If no upward trend, no saturation
     if slope <= 0:
-        return None  # No saturation trend
+        return None
 
-    saturation_day_index = (
-        latency_threshold - intercept
-    ) / slope
-
+    # Solve for saturation day
+    saturation_day_index = (latency_threshold - intercept) / slope
     saturation_day_index = int(np.ceil(saturation_day_index))
 
-    saturation_date = (
-        df["date"].min()
-        + pd.Timedelta(days=saturation_day_index)
-    )
+    saturation_date = df["date"].min() + pd.Timedelta(days=saturation_day_index)
 
     return {
         "slope": slope,
