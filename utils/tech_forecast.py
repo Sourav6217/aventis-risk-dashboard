@@ -14,7 +14,12 @@ def tech_saturation_forecast(
     df = df.copy()
 
     # Convert date to datetime
-    df["date"] = pd.to_datetime(df["date"])
+    df["date"] = pd.to_datetime(
+    df["date"].astype(str).str.strip(),
+    format="%Y-%m-%d",
+    errors="coerce"
+)
+
 
     # Create day index (0,1,2,...)
     df["day_index"] = (df["date"] - df["date"].min()).dt.days
