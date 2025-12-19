@@ -1,6 +1,0 @@
-client_id,received_day,records_total,records_invalid,latency_minutes
-C001,0,1200,30,8
-C002,1,800,0,12
-C003,2,500,50,20
-C004,1,1000,10,6
-C005,0,600,0,9
