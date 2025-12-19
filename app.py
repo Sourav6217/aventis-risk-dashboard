@@ -6,36 +6,36 @@ st.set_page_config(page_title="Aventis Ops Risk Dashboard", layout="wide")
 
 st.title("Aventis Finance – Operational Risk Command Center")
 
+# ---------------- GLOBAL DATA LOAD ----------------
+# Daily ops data
+uploaded_file = st.file_uploader(
+    "Upload Daily Feed Status (CSV)",
+    type=["csv"]
+)
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.success("File uploaded successfully")
+else:
+    df = pd.read_csv("data/sample_daily_feed.csv")
+    st.info("Using sample data")
+
+# Client CRI historical data (load ONCE)
+client_history_df = pd.read_csv("data/client_weekly_history.csv")
+client_cri_df = compute_cri(client_history_df)
+
+# ---------------- TABS ----------------
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📊 Operational Snapshot",
     "🚨 Risk Alerts",
     "📐 Risk Scoring (FMEA)",
     "🧪 Data Protection",
-    " Client Reliability Index(CRI)",
+    "🔮 Client Reliability Index (CRI)",
     "📑 Governance"
 ])
 
 # ---------------- TAB 1 ----------------
 with tab1:
-    st.write("Upload daily feed status or use sample data")
-
-    uploaded_file = st.file_uploader(
-        "Upload Daily Feed Status (CSV)",
-        type=["csv"]
-    )
-
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.success("File uploaded successfully")
-    else:
-        df = pd.read_csv("data/sample_daily_feed.csv")
-        st.info("Using sample data")
-    # Load client historical data for CRI
-    client_history_df = pd.read_csv("data/client_weekly_history.csv")
-
-    # Compute CRI
-    client_cri_df = compute_cri(client_history_df)
-
     st.subheader("Daily Feed Snapshot")
     st.dataframe(df)
 
@@ -91,9 +91,7 @@ with tab3:
         st.info("MEDIUM RISK")
     else:
         st.success("LOW RISK")
-    st.markdown("---")
-   
-    
+
 # ---------------- TAB 4 ----------------
 with tab4:
     st.subheader("🧪 Quarantine Pattern – Data Flow Protection")
@@ -109,34 +107,24 @@ with tab4:
 
 # ---------------- TAB 5 ----------------
 with tab5:
-     st.subheader("🔮 Client Reliability Index (CRI) Simulator")
+    st.subheader("🔮 Client Reliability Index (CRI) Simulator")
 
-    # Client selector
     selected_client = st.selectbox(
         "Select Client ID",
         sorted(client_cri_df["client_id"].unique())
     )
 
-    # Filter selected client data
     client_data = client_cri_df[
         client_cri_df["client_id"] == selected_client
     ].sort_values(["year", "month", "week_of_month"])
 
-    # Display weekly CRI table
     st.write("Weekly Client Reliability Overview")
     st.dataframe(
         client_data[
-            [
-                "year",
-                "month",
-                "week_of_month",
-                "CRI",
-                "Risk_Category"
-            ]
+            ["year", "month", "week_of_month", "CRI", "Risk_Category"]
         ]
     )
 
-    # Highlight high-risk weeks
     high_risk_weeks = client_data[
         client_data["Risk_Category"] == "High Risk"
     ]
@@ -144,8 +132,7 @@ with tab5:
     if not high_risk_weeks.empty:
         st.warning(
             f"⚠️ High Risk Weeks Detected: "
-            f"{len(high_risk_weeks)} out of "
-            f"{len(client_data)} weeks"
+            f"{len(high_risk_weeks)} out of {len(client_data)} weeks"
         )
     else:
         st.success("No high-risk weeks detected for this client")
