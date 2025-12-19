@@ -109,7 +109,7 @@ with tab4:
     c2.metric("Safely Processed %", f"{processed_rate*100:.2f}%")
 
     st.progress(processed_rate)
-        st.markdown("---")
+    st.markdown("---")
     st.subheader("🔮 Technology Saturation Forecast")
 
     if tech_forecast_result is None:
