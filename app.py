@@ -29,10 +29,10 @@ with tab1:
         df = pd.read_csv("data/sample_daily_feed.csv")
         st.info("Using sample data")
     # Load client historical data for CRI
-client_history_df = pd.read_csv("data/client_weekly_history.csv")
+    client_history_df = pd.read_csv("data/client_weekly_history.csv")
 
-# Compute CRI
-client_cri_df = compute_cri(client_history_df)
+    # Compute CRI
+    client_cri_df = compute_cri(client_history_df)
 
     st.subheader("Daily Feed Snapshot")
     st.dataframe(df)
