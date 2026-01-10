@@ -1,6 +1,6 @@
 https://aventis-risk-dashboard-jxsfqopkdyfg5hhjjygdpy.streamlit.app/
 
-Case Study 1: Managing Operational Risk in Data Operations & Data Load Setup
+Case Study: Managing Operational Risk in Data Operations & Data Load Setup
 Scenario
 Aventis Finance Pvt. Limited, a regulated financial services entity, operates a highly complex data ingestion ecosystem. Every day, the company processes data from 2,025 client systems into its centralized platform, ‘Datahub’. This data is critical for assessing consumer creditworthiness and is accessed by clients through APIs for downstream credit decisions.
 
